@@ -1,26 +1,53 @@
 import streamlit as st
 from nltk.corpus import stopwords
-import nltk
 from joblib import load
-
-nltk.download('stopwords')
+import nltk
 import re
+import base64
 
 stop_words = set(stopwords.words('english'))
 def clean_text(text):
     text = text.lower()
-    text = re.sub(r'[^a-z\s]', '', text)  # elimină tot ce nu e literă sau spațiu
+    # it replaces everything except a-z and space with '' space
+    text = re.sub(r'[^a-z\s]', '', text)
+    # concatenates all words that are not in stop_words
     text = ' '.join([word for word in text.split() if word not in stop_words])
     return text
 
-
+#xgb trained model from jupyter notebook
 pipeline = load("model_trained.joblib")
 
-st.write("Introduceti textul")
-sms = st.text_input("SMS Detection")
+image_path = "bg.jpg"
+with open(image_path, "rb") as image:
+    # read image(bianry format)
+    data = image.read()
+    # transform it into base64
+    bytes = base64.b64encode(data)
+    # transform it into string
+    encoded_string = bytes.decode()
+
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background: url(data:image/jpg;base64,{encoded_string});
+        background-size: cover;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+st.markdown("<span style='color: DarkRed; font-weight: bold; font-size: 40px;'> SMS Spam Detection</span>",
+            unsafe_allow_html= True)
+# st.markdown("<span style='color: Black; font-weight: bold; font-size:20px;'> Insert your SMS</span>",
+#             unsafe_allow_html= True)
+sms = st.text_input("", placeholder='Insert your SMS right here!')
 
 if sms:
     text = clean_text(sms)
-    st.write("Text curățat:", text)
+    st.write("Cleaned text:", text)
     prediction = pipeline.predict([text])
-    st.write("Predicție:", prediction[0])
+    if (prediction[0] == 0):
+        st.image('ham.jpg')
+    else:
+        st.image("spam.jpg")
