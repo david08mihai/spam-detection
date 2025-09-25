@@ -39,8 +39,6 @@ st.markdown(
 )
 st.markdown("<span style='color: DarkRed; font-weight: bold; font-size: 40px;'> SMS Spam Detection</span>",
             unsafe_allow_html= True)
-# st.markdown("<span style='color: Black; font-weight: bold; font-size:20px;'> Insert your SMS</span>",
-#             unsafe_allow_html= True)
 sms = st.text_input("", placeholder='Insert your SMS right here!')
 
 if sms:
