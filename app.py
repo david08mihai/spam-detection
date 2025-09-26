@@ -43,7 +43,6 @@ sms = st.text_input("", placeholder='Insert your SMS right here!')
 
 if sms:
     text = clean_text(sms)
-    st.write("Cleaned text:", text)
     prediction = pipeline.predict([text])
     if (prediction[0] == 0):
         st.image('ham.jpg')
